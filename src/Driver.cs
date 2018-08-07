@@ -78,18 +78,27 @@ namespace Shor
             }
 
             // Step3
-            System.DateTime currentTime=new System.DateTime(); 
+            Random rd = new Random();
             long[] presult = new long [s3repT];
             for (int i = 0; i < s3repT; ++i)
                 presult[i] = -1;
             ParallelLoopResult result = Parallel.For (0, s3repT,
                                             (i, ParallelLoopState) =>
             {
-                Random rd = new Random((int) (currentTime.Millisecond * i^i));
-                long x = rd.Next(2, Convert.ToInt32(Math.Sqrt(n)) + 1);
-                presult[i] = ParallelWork(x, n);
+                // try
+                // {
+            
+                    
+                    long x = rd.Next(2, Convert.ToInt32(Math.Sqrt(n)) + 1);
+                    presult[i] = ParallelWork(x, n);
+            
+                // }
+                // catch
+                // {
+                //     presult[i] = -1;
+                // }
             });
-            while (!result.IsCompleted) ;
+            // while (!result.IsCompleted) ;
             for (int i = 0; i < s3repT; ++i)
                 if (presult[i] != -1)
                     return presult[i];
@@ -100,7 +109,10 @@ namespace Shor
         {
             long gcdxn = Gcd(x, n);
             if (gcdxn > 1)
+            {
+                Console.WriteLine(Convert.ToString(x)+':'+Convert.ToString(gcdxn));
                 return gcdxn;
+            }
             else
             {
                 // Step4
@@ -114,16 +126,23 @@ namespace Shor
                     {
                         long tmp = Gcd(xpow - 1, n);
                         if (tmp != 1 && n % tmp == 0)
+                        {
+                            Console.WriteLine(Convert.ToString(x)+':'+Convert.ToString(tmp));
                             return tmp;
+                        }
                         else
                         {
                             tmp = Gcd(xpow + 1, n);
                             if (tmp != 1 && n % tmp == 0)
-                                return tmp; 
+                            {
+                                Console.WriteLine(Convert.ToString(x)+':'+Convert.ToString(tmp));
+                                return tmp;
+                            }
                         } 
                     }
                 }
             }
+            Console.WriteLine(Convert.ToString(x)+':'+Convert.ToString(-1));
             return -1;
         }
 
