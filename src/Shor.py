@@ -4,7 +4,7 @@ import multiprocessing
 import time
 import os
 import sys
-
+import time
 global isSilent
 
 global processSetFlag
@@ -12,8 +12,32 @@ global processNum
 global isParallel
 
 def Shor(arg):
-    os.popen('dotnet run ' + arg + ' 1>./ShorResultDir/' + arg + '.result')
+    # print(str(type(arg).__name__))
+    os.popen('dotnet run ' + str(arg) + ' 1>./ShorResultDir/' + str(arg) + '.result')
 
+def ShorWrapper(args):
+    import re
+
+    flag = True
+    res = []
+    while flag:
+        flag = False
+        time.sleep(3)
+        for arg in args:
+            flag = True
+            ar = []
+            Shor(str(arg))
+            line = ''
+            with open('./ShorResultDir/'+str(arg)+'.result', 'r') as f:
+                line = (f.readlines())[-1]
+            line = line.replace('\n','')
+            elems = re.split(r'[x=]', line)
+            # print(elems)
+            for elem in elems:
+                ar.append(elem)
+            res.append(ar)
+            args.remove(arg)
+    return res
 
 def parsing(args):
     global isSilent

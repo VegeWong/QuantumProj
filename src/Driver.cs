@@ -22,6 +22,7 @@ namespace Shor
                 for (int i = 1; i <= args.Length; ++i)
                 {
                     long targetNum = Convert.ToInt64(args[i - 1]);
+                    // Console.WriteLine(Convert.ToString(targetNum));
                     long r = Procedure(targetNum);
                     string str = args[i - 1] + "=";
                     if (r == -1)
@@ -33,6 +34,7 @@ namespace Shor
                     Console.WriteLine("Found: " + Convert.ToString(r));
                     while ((targetNum /= r) != 1)
                     {
+                        // Console.WriteLine(Convert.ToString(targetNum));
                         r = Procedure(targetNum);
                         if (r == -1)
                             r = targetNum;
@@ -62,6 +64,7 @@ namespace Shor
 
         static long Procedure(long n)
         {   
+            // Console.WriteLine(Convert.ToString(n));
             long s3repT = 5;
 
             // Step1
@@ -82,7 +85,7 @@ namespace Shor
             Random rd = new Random();
             for (int i = 0; i < s3repT; ++i)
             {
-                long x = rd.Next(1, Convert.ToInt32(Math.Sqrt(n)) + 1);
+                long x = rd.Next(2, Convert.ToInt32(Math.Sqrt(n)) + 1);
                 long gcdxn = Gcd(x, n);
                 if (gcdxn > 1)
                     return gcdxn;
