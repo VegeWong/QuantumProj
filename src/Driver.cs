@@ -1,14 +1,13 @@
 using Microsoft.Quantum.Simulation.Core;
 using Microsoft.Quantum.Simulation.Simulators;
 using System;
-
+using System.Threading.Tasks;
 
 namespace Shor
 {
     using ShorQuantum;
     class Driver
     { 
-        
         static void Main(string[] args)
         {
             Console.WriteLine("Program Shor running...");
@@ -80,16 +79,23 @@ namespace Shor
 
             // Step3
             Random rd = new Random();
+            long[] presult = new long [s3repT];
             for (int i = 0; i < s3repT; ++i)
+                presult[i] = -1;
+            ParallelLoopResult result = Parallel.For (0, s3repT,
+                                            (i, ParallelLoopState) =>
             {
-                long x = rd.Next(1, Convert.ToInt32(Math.Sqrt(n)) + 1);
+                long x = rd.Next(2, Convert.ToInt32(Math.Sqrt(n)) + 1);
                 long gcdxn = Gcd(x, n);
                 if (gcdxn > 1)
-                    return gcdxn;
+                {
+                    presult[i] = gcdxn;
+                    ParallelLoopState.Stop();
+                }
                 else
                 {
                     // Step4
-                    Console.WriteLine("Enter orderFinding");
+                    Console.WriteLine(string.Format("Thread {0}:Enter orderFinding with random x:", Convert.ToString(i))+Convert.ToString(x));
                     long ord = orderFinding(x, n);
                     Console.WriteLine("Exit orderFinding");
                     // Step5
@@ -100,14 +106,21 @@ namespace Shor
                         {
                             long tmp = Gcd(xpow - 1, n);
                             if (tmp != 1 && n % tmp == 0)
-                                return tmp;
-                            tmp = Gcd(xpow + 1, n);
-                            if (tmp != 1 && n % tmp == 0)
-                                return tmp;   
+                                presult[i] = tmp;
+                            else
+                            {
+                                tmp = Gcd(xpow + 1, n);
+                                if (tmp != 1 && n % tmp == 0)
+                                    presult[i] = tmp; 
+                            } 
                         }
                     }
                 }
-            }
+            });
+            while (!result.IsCompleted) ;
+            for (int i = 0; i < s3repT; ++i)
+                if (presult[i] != -1)
+                    return presult[i];
             return -1;
         }
 
