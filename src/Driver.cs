@@ -23,7 +23,7 @@ namespace Shor
                 {
                     long r = Procedure(Convert.ToInt64(args[i - 1]));
                     if (r != -1)
-                        Console.WriteLine(string.Format("\n{0} is a factor of {1}", Convert.Tostring(r), args[i - 1]));
+                        Console.WriteLine(string.Format("\n{0} is a factor of {1}", Convert.ToString(r), args[i - 1]));
                     else
                         Console.WriteLine(string.Format("\nShor factoring of {0} fails", args[i - 1]));
                 }
@@ -54,13 +54,13 @@ namespace Shor
             if (n % 2 == 0) return 2;
 
             // Step2
-            long y = Math.Log(2, n);
-            for (long b = 2; b <= Math.sqrt(n); ++b)
+            double y = Math.Log(2, n);
+            for (long b = 2; b <= Math.Sqrt(n); ++b)
             {
                 double x = y / b;
-                double simulateValue = 2 ^ x;
-                long rc = Fpow(Math.Ceiling(simulateValue), b);
-                long rf = Fpow(Math.Floor(simulateValue), b);
+                double simulateValue = Math.Pow(2.0, x);
+                long rc = FpowMod(Convert.ToInt64(Math.Ceiling(simulateValue)), b, n);
+                long rf = FpowMod(Convert.ToInt64(Math.Floor(simulateValue)), b, n);
                 if (rc == n || rf == n) return b; 
             }
 
@@ -68,7 +68,7 @@ namespace Shor
             Random rd = new Random();
             for (int i = 0; i < s3repT; ++i)
             {
-                long x = rd.next(1, n);
+                long x = rd.Next(1, Convert.ToInt32(n));
                 long gcdxn = Gcd(x, n);
                 if (gcdxn > 1)
                     return gcdxn;
@@ -77,12 +77,12 @@ namespace Shor
                     // Step4
                     long ord = orderFinding(x, n);
                     // Step5
-                    if (ord & 1 == 0)
+                    if (ord % 2 == 0)
                     {
                         long xpow = x ^ (ord / 2);
                         if (xpow % n != n - 1)
                         {
-                            tmp = Gcd(xpow - 1, n);
+                            long tmp = Gcd(xpow - 1, n);
                             if (tmp != 1 && n % tmp == 0)
                                 return tmp;
                             tmp = Gcd(xpow + 1, n);
@@ -95,14 +95,16 @@ namespace Shor
             return -1;
         }
 
-        static long orderFinding(long base, long n)
+        static long orderFinding(long nbase, long n)
         {
+            long numerator = 0;
+            long numOfbit;
             using  (var sim = new QuantumSimulator(randomNumberGeneratorSeed: 2018))
             {
-                var res = QuantumOrderFinding.Run(sim, base, n).Result;
+                var res = QuantumOrderFinding.Run(sim, nbase, n).Result;
 
                 //　Result process
-                long numerator = 0;
+                numOfbit = res.Length;
                 for (int i = 0; i < numOfbit; ++i)
                 {
                     numerator <<= 1;
@@ -122,7 +124,7 @@ namespace Shor
             bool flag = true;
             while (flag)
             {
-                M[n] = Math.Floor(m + eps);
+                M[n] = Convert.ToInt64(Math.Floor(m + eps));
                 if (Math.Abs(m - M[n]) < eps)
                     flag = false;
                 else
@@ -144,14 +146,14 @@ namespace Shor
         }
 
         // Util-function
-        static long Fpow(long base, long exp)
+        static long FpowMod(long nbase, long exp, long N)
         {
             long res = 1;
             while (exp != 0)
             {
-                if (exp & 1 == 1)
-                    res = res * base % N;
-                base = base ^ 2 % N;
+                if (exp % 2 == 1)
+                    res = res * nbase % N;
+                nbase = nbase ^ 2 % N;
                 exp = exp >> 1;
             }
             return res;

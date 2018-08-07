@@ -13,3 +13,7 @@
 # Modified by Wang Hanjing
 # Modify Time 2018-08-07/10:55
 # Patially Fix syntax error in Driver.cs e.g missing ‘；’ && Type declaration
+
+# Modified by Wang Hanjing
+# Modify Time 2018-08-07/11:27
+# Fix syntax error in Driver.cs e.g Method name
