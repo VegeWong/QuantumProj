@@ -11,15 +11,15 @@ namespace Shor
         
         static void Main(string[] args)
         {
-            Console.WriteLine("Program Shor running...")
+            Console.WriteLine("Program Shor running...");
             if (args.Length == 0)
             {
-                Console.WriteLine("\nPlease type the numbers you want to factor")
+                Console.WriteLine("\nPlease type the numbers you want to factor");
                 return;
             }
             else
             {
-                for (int i = 1； i <= args.Length; ++i)
+                for (int i = 1; i <= args.Length; ++i)
                 {
                     long r = Procedure(Convert.ToInt64(args[i - 1]));
                     if (r != -1)
@@ -90,17 +90,16 @@ namespace Shor
                                 return tmp;   
                         }
                     }
-                    return -1;
                 }
             }
-            
-
+            return -1;
         }
+
         static long orderFinding(long base, long n)
         {
-            using  (var sim = new QuantumSimulat(randomNumberGeneratorSeed: 2018))
+            using  (var sim = new QuantumSimulator(randomNumberGeneratorSeed: 2018))
             {
-                var res = QuantumOrderFinding.Run(sim).Result;
+                var res = QuantumOrderFinding.Run(sim, base, n).Result;
 
                 //　Result process
                 long numerator = 0;
@@ -117,10 +116,10 @@ namespace Shor
 
         static long ContinueFractionAlgorithm(double m)
         {
-            eps = 1e-10;
-            long[] M = new long[20]
+            double eps = 1e-10;
+            long[] M = new long[20];
             int n = 0;
-            bool flag = true
+            bool flag = true;
             while (flag)
             {
                 M[n] = Math.Floor(m + eps);
@@ -134,6 +133,7 @@ namespace Shor
             // Reconstruct
             long numerator = 0;
             long denominator = 1;
+            long tmp;
             while (--n >= 0)
             {
                 tmp = numerator + denominator * M[n];
