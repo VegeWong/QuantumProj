@@ -75,8 +75,8 @@
 
     operation QuantumOrderFinding(x: Int, N: Int):(Int[]){
         body{
-            let l = 4;
-            let t = 10;
+            let l = 5;
+            let t = 6;
             mutable results = new Int[t];
             mutable ep = 1;
             using(qubits = Qubit[l+t]){
@@ -100,7 +100,7 @@
                 }
 
                 // apply inverse QFT
-                IQFT(Reg1, l+t);
+                IQFT(Reg1, t);
 
                 // measure Reg1
                 for (i in 0..t-1){

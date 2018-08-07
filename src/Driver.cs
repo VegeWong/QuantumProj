@@ -21,11 +21,20 @@ namespace Shor
             {
                 for (int i = 1; i <= args.Length; ++i)
                 {
-                    long r = Procedure(Convert.ToInt64(args[i - 1]));
-                    if (r != -1)
-                        Console.WriteLine(string.Format("\n{0} is a factor of {1}", Convert.ToString(r), args[i - 1]));
-                    else
-                        Console.WriteLine(string.Format("\nShor factoring of {0} fails", args[i - 1]));
+                    long targetNum = Convert.ToInt64(args[i - 1]);
+                    long r = Procedure(targetNum);
+                    string str = args[i - 1] + "=";
+                    if (r == -1)
+                        r = targetNum;
+                    str += Convert.ToString(r);
+                    while ((targetNum /= r) != 1)
+                    {
+                        r = Procedure(targetNum);
+                        if (r == -1)
+                            r = targetNum;
+                        str += "x" + Convert.ToString(r);
+                    }
+                    Console.WriteLine(str);
                 }
             }
 
