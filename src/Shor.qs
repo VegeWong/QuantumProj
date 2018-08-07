@@ -84,10 +84,10 @@
                 let Reg2 = qubits[t..l+t-1];
                 
                 // Reg2 init to |1>
-                for (i in t..l+t-1){
-                    X(qubits[i]);
-                }
-                
+                //for (i in t..l+t-1){
+                //    X(qubits[i]);
+                //}
+                X(Reg2[0]);
                 // apply H to Reg1
                 for (i in 0..t-1){
                     H(qubits[i]);

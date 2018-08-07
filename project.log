@@ -17,3 +17,7 @@
 # Modified by Wang Hanjing
 # Modify Time 2018-08-07/11:27
 # Fix syntax error in Driver.cs e.g Method name
+
+# Modified by Wu Yuwei
+# Modify Time 2018-08-07/11:47
+# Fix bug in circuit:initial Reg2[0] to |1> not all Reg2
