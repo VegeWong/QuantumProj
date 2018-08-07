@@ -78,49 +78,52 @@ namespace Shor
             }
 
             // Step3
-            Random rd = new Random();
+            System.DateTime currentTime=new System.DateTime(); 
             long[] presult = new long [s3repT];
             for (int i = 0; i < s3repT; ++i)
                 presult[i] = -1;
             ParallelLoopResult result = Parallel.For (0, s3repT,
                                             (i, ParallelLoopState) =>
             {
+                Random rd = new Random((int) (currentTime.Millisecond * i^i));
                 long x = rd.Next(2, Convert.ToInt32(Math.Sqrt(n)) + 1);
-                long gcdxn = Gcd(x, n);
-                if (gcdxn > 1)
-                {
-                    presult[i] = gcdxn;
-                    ParallelLoopState.Stop();
-                }
-                else
-                {
-                    // Step4
-                    Console.WriteLine(string.Format("Thread {0}:Enter orderFinding with random x:", Convert.ToString(i))+Convert.ToString(x));
-                    long ord = orderFinding(x, n);
-                    Console.WriteLine("Exit orderFinding");
-                    // Step5
-                    if (ord % 2 == 0)
-                    {
-                        long xpow = x ^ (ord / 2);
-                        if (xpow % n != n - 1)
-                        {
-                            long tmp = Gcd(xpow - 1, n);
-                            if (tmp != 1 && n % tmp == 0)
-                                presult[i] = tmp;
-                            else
-                            {
-                                tmp = Gcd(xpow + 1, n);
-                                if (tmp != 1 && n % tmp == 0)
-                                    presult[i] = tmp; 
-                            } 
-                        }
-                    }
-                }
+                presult[i] = ParallelWork(x, n);
             });
             while (!result.IsCompleted) ;
             for (int i = 0; i < s3repT; ++i)
                 if (presult[i] != -1)
                     return presult[i];
+            return -1;
+        }
+
+        static long ParallelWork(long x, long n)
+        {
+            long gcdxn = Gcd(x, n);
+            if (gcdxn > 1)
+                return gcdxn;
+            else
+            {
+                // Step4
+                long ord = orderFinding(x, n);
+
+                // Step5
+                if (ord % 2 == 0)
+                {
+                    long xpow = x ^ (ord / 2);
+                    if (xpow % n != n - 1)
+                    {
+                        long tmp = Gcd(xpow - 1, n);
+                        if (tmp != 1 && n % tmp == 0)
+                            return tmp;
+                        else
+                        {
+                            tmp = Gcd(xpow + 1, n);
+                            if (tmp != 1 && n % tmp == 0)
+                                return tmp; 
+                        } 
+                    }
+                }
+            }
             return -1;
         }
 
