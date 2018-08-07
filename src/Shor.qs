@@ -123,7 +123,7 @@
             using(qs=Qubit[4]){
                 QFT(qs, 4);
                 for (i in 0..3){
-                    if(M(qubits[i]) == Zero){
+                    if(M(qs[i]) == Zero){
                         set results[i] = 0;
                     }
                     else{
@@ -139,11 +139,11 @@
     // unit test for IQFT
     operation TestIQFT():(Int[]){
         body{
-            mutable results = new Int[t];
+            mutable results = new Int[4];
             using(qs=Qubit[4]){
                 IQFT(qs, 4);
-                for (i in 0..t-1){
-                    if(M(qubits[i]) == Zero){
+                for (i in 0..3){
+                    if(M(qs[i]) == Zero){
                         set results[i] = 0;
                     }
                     else{
@@ -159,13 +159,13 @@
     // unit test for Ua
     operation TestUa() : (Int[]) {
         body{
-            mutable results = new Int[t];
+            mutable results = new Int[5];
             using(qs=Qubit[5]){
                 X(qs[2]);
                 X(qs[3]);
-                Ux(qs,11,21);
+                Ua(qs,11,21);
                 for (i in 0..4){
-                    if(M(qubits[i]) == Zero){
+                    if(M(qs[i]) == Zero){
                         set results[i] = 0;
                     }
                     else{
