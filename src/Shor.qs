@@ -4,6 +4,8 @@
     open Microsoft.Quantum.Primitive;
     open Microsoft.Quantum.Extensions.Math;
     open Microsoft.Quantum.Extensions.Convert;
+    open Microsoft.Quantum.Extensions.Diagnostics;
+
     operation QFT (qubits: Qubit[], len: Int) : ()
     {
         body
@@ -84,9 +86,6 @@
                 let Reg2 = qubits[t..l+t-1];
                 
                 // Reg2 init to |1>
-                //for (i in t..l+t-1){
-                //    X(qubits[i]);
-                //}
                 X(Reg2[0]);
                 // apply H to Reg1
                 for (i in 0..t-1){
@@ -116,4 +115,75 @@
             return results;
         }
     }
+
+    // unit test for QFT
+    operation TestQFT():(Int[]){
+        body{
+            mutable results = new Int[4];
+            using(qs=Qubit[4]){
+                QFT(qs, 4);
+                for (i in 0..3){
+                    if(M(qubits[i]) == Zero){
+                        set results[i] = 0;
+                    }
+                    else{
+                        set results[i] = 1;
+                    }
+                }
+                ResetAll(qs);
+            }
+            return results;
+        }
+    }
+
+    // unit test for IQFT
+    operation TestIQFT():(Int[]){
+        body{
+            mutable results = new Int[t];
+            using(qs=Qubit[4]){
+                IQFT(qs, 4);
+                for (i in 0..t-1){
+                    if(M(qubits[i]) == Zero){
+                        set results[i] = 0;
+                    }
+                    else{
+                        set results[i] = 1;
+                    }
+                }
+                ResetAll(qs);
+            }
+            return results;
+        }
+    }
+
+    // unit test for Ua
+    operation TestUa() : (Int[]) {
+        body{
+            mutable results = new Int[t];
+            using(qs=Qubit[5]){
+                X(qs[2]);
+                X(qs[3]);
+                Ux(qs,11,21);
+                for (i in 0..4){
+                    if(M(qubits[i]) == Zero){
+                        set results[i] = 0;
+                    }
+                    else{
+                        set results[i] = 1;
+                    }
+                }
+                ResetAll(qs);
+            }
+            return results;
+        }
+    }
+    
+    // unit test for QuantumOrderFinding
+    operation TestOrderFinding() : (Int[]) {
+        body{
+            return QuantumOrderFinding(3,21,5,6);   
+        }
+    }
+    
+
 }
