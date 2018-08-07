@@ -73,10 +73,10 @@
         return result;
     }
 
-    operation QuantumOrderFinding(x: Int, N: Int):(Int[]){
+    operation QuantumOrderFinding(x: Int, N: Int, a: Int, b: Int):(Int[]){
         body{
-            let l = 5;
-            let t = 6;
+            let l = a;
+            let t = b;
             mutable results = new Int[t];
             mutable ep = 1;
             using(qubits = Qubit[l+t]){

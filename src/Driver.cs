@@ -25,13 +25,18 @@ namespace Shor
                     long r = Procedure(targetNum);
                     string str = args[i - 1] + "=";
                     if (r == -1)
+                    {
                         r = targetNum;
+                        Console.WriteLine("Found: " + Convert.ToString(r));
+                    }
                     str += Convert.ToString(r);
+                    Console.WriteLine("Found: " + Convert.ToString(r));
                     while ((targetNum /= r) != 1)
                     {
                         r = Procedure(targetNum);
                         if (r == -1)
                             r = targetNum;
+                        Console.WriteLine("Found: " + Convert.ToString(r));
                         str += "x" + Convert.ToString(r);
                     }
                     Console.WriteLine(str);
@@ -77,14 +82,16 @@ namespace Shor
             Random rd = new Random();
             for (int i = 0; i < s3repT; ++i)
             {
-                long x = rd.Next(1, Convert.ToInt32(n));
+                long x = rd.Next(1, Convert.ToInt32(Math.Sqrt(n)) + 1);
                 long gcdxn = Gcd(x, n);
                 if (gcdxn > 1)
                     return gcdxn;
                 else
                 {
                     // Step4
+                    Console.WriteLine("Enter orderFinding");
                     long ord = orderFinding(x, n);
+                    Console.WriteLine("Exit orderFinding");
                     // Step5
                     if (ord % 2 == 0)
                     {
@@ -108,9 +115,11 @@ namespace Shor
         {
             long numerator = 0;
             long numOfbit;
+            int a = Convert.ToInt32(Math.Log(Convert.ToDouble(n))/Math.Log(2.0)) + 1;
+            int b = a + 1;
             using  (var sim = new QuantumSimulator(randomNumberGeneratorSeed: 2018))
             {
-                var res = QuantumOrderFinding.Run(sim, nbase, n).Result;
+                var res = QuantumOrderFinding.Run(sim, nbase, n, a, b).Result;
 
                 //　Result process
                 numOfbit = res.Length;
