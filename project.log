@@ -21,3 +21,11 @@
 # Modified by Wu Yuwei
 # Modify Time 2018-08-07/11:47
 # Fix bug in circuit:initial Reg2[0] to |1> not all Reg2
+
+# Modified by Wu Yuwei
+# Modify Time 2018-08-07/12:30
+# Fix bug in QuantumOrderFinding:IQFT(Reg1, t) instead of IQFT(Reg1, t+L)
+
+# Modified by Wu Yuwei
+# Modify Time 2018-08-07/12:30
+# Fix bug in QuantumOrderFinding:t=6, l=5 instead of t=10,l=4
