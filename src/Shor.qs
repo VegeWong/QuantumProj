@@ -3,18 +3,18 @@
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Primitive;
     open Microsoft.Quantum.Extensions.Math;
-    
-    operation QFT (qubits: Qubit[], len: int) : ()
+    open Microsoft.Quantum.Extensions.Convert;
+    operation QFT (qubits: Qubit[], len: Int) : ()
     {
         body
         {
-            let fi = 2*PI();
+            let fi = 2.0*PI();
 
             for (i in 0..len-1){
                 H(qubits[i]);
                 for (j in 0..len-1)
                 {
-                    (Controlled R1)([qubits[j+1]],(fi/PowD(2,j+1),  qubits[i]));
+                    (Controlled R1)([qubits[j+1]],(fi/PowD(2.0, ToDouble(j+1)),  qubits[i]));
                 }
             }
 
@@ -24,10 +24,10 @@
         }
     }
 
-    operation IQFT(qubits: Qubit[], len: int):()
+    operation IQFT(qubits: Qubit[], len: Int):()
     {
         body{
-            let fi = -2*PI();
+            let fi = -2.0*PI();
 
             for (i in 0..len/2-1){
                 SWAP(qubits[i],qubits[len-1-i]);
@@ -35,14 +35,14 @@
 
             for (i in 0..len-1){
                 for (j in i..-1..1){
-                    (Controlled R1)([qubits[i-j]],(fi/PowD(2,j),  qubits[i]));
+                    (Controlled R1)([qubits[i-j]],(fi/PowD(2.0, ToDouble(j)),  qubits[i]));
                 }
                 H(qubits[i]);
             }
         }
     }
 
-    operation Ua(qubits: Qubit[], x: int, N: int):(){
+    operation Ua(qubits: Qubit[], x: Int, N: Int):(){
         body{
             let le = LittleEndian(qubits);
             ModularMultiplyByConstantLE(x, N, le);
@@ -55,10 +55,10 @@
             for (i in 0..x-1){
                 set result=result*2;
             }
-            return ans;
+            return result;
     }
 
-    function modexp(x: int, scpt: int, N: int) : () {
+    function modexp(x: Int, scpt: Int, N: Int) : (Int) {
         mutable scp = scpt;
         mutable vx = x;
         mutable result = 1;
@@ -73,11 +73,12 @@
         return result;
     }
 
-    operation QuantumOrderFinding(x: int, N: int):(int[]){
+    operation QuantumOrderFinding(x: Int, N: Int):(Int[]){
         body{
             let l = 4;
             let t = 10;
-            mutable results[] = new int[t];
+            mutable results = new Int[t];
+            mutable ep = 1;
             using(qubits = Qubit[l+t]){
                 let Reg1 = qubits[0..t-1];
                 let Reg2 = qubits[t..l+t-1];
@@ -104,14 +105,15 @@
                 // measure Reg1
                 for (i in 0..t-1){
                     if(M(qubits[i]) == Zero){
-                        results[i] = 0;
+                        set results[i] = 0;
                     }
                     else{
-                        results[i] = 1;
+                        set results[i] = 1;
                     }
                 }
-            ResetAll(qubits);
+                ResetAll(qubits);
+            }
+            return results;
         }
-        return results;
     }
 }
